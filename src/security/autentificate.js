@@ -10,10 +10,10 @@ export const AuthRouter = express.Router();
 AuthRouter.post("/login", async (req, res) => {
   const { user_email, password } = req.body;
   try {
-    const user = await db.oneOrNone(`SELECT cu.name, cu.email, cu.password FROM "customer" cu WHERE cu.email = $1;`, [user_email]);
+    const user = await db.oneOrNone(`SELECT re.first_name, re.last_name, re.email, re.password FROM "receptionist" re WHERE re.email = $1;`, [user_email]);
     if (user && user.password === password) {
       const token = jwt.sign({ email: user.email }, jwtSecretKey, { expiresIn: "1h" });
-      res.json({ message: 'Authentification réussie', "user_name": user.name, token: token });
+      res.json({ message: 'Authentification réussie', "first_name": user.first_name, "last_name": user.last_name, token: token });
     } else {
       res.status(401).json({ error: 'Identifiants invalides' });
     }
